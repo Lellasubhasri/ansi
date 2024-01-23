@@ -1,0 +1,87 @@
+ansible --version
+    5  mkdir playbooks
+    6  vi inventory.hosts
+    7  bi ansible.cfg
+    8  vi ansible.cfg
+    9  vi playbook.yaml
+   10  cd ~/.ssh
+   11  ssh-keygen -t rsa -b 4096
+   12  ls
+   13  vi id_rsa.pub 
+   14  ssh-add /home/ubuntu/id_rsa  
+   15  ls -la
+   16  chmod 644 id_rsa.pub
+   17  eval "$(ssh-agent -s)"
+   18  ssh-add /home/ubuntu/id_rsa 
+   19  ssh-add -l 
+   20  ssh-add
+   21  ssh-add /home/ubuntu/playbooks/
+   22  cd /home/ubuntu/
+   23  cd playbook
+   24  cd playbooks
+   25  ls
+   26  cd ..
+   27  ls
+   28  cd playbook
+   29  cd playbooks/
+   30  ls
+   31  cd ..
+   32  mv ansible.cfg inventory.hosts playbook.yaml playbooks
+   33  ls
+   34  cd playbooks/
+   35  ls
+   36  chmod 744 playbook.yaml 
+   37  ls -la
+   38  cd ~/.ssh
+   39  ls
+   40  cp id_rsa /home/ubuntu/playbooks/
+   41  cd /home/ubuntu/playbooks/
+   42  ls
+   43  ansible-playbook -i inventory.ini -u ubuntu -b playbook.yml
+   44  ansible-playbook -i inventory.ini -u ubuntu -b playbook.yaml
+   45  cd /tmp/my_repo/
+   46  ls
+   47  history
+
+
+cat inventory.hosts 
+
+[localhost]
+3.77.198.110
+
+[localhost:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+
+
+ cat ansible.cfg 
+
+[defaults]
+inventory = ./inventory.hosts  
+remote_user = ubuntu  
+private_key_file = ~/.ssh/id_rsa  
+
+[ssh_connection]
+pipelining = True 
+
+
+ cat playbook.yaml 
+
+---
+- name: Copy File from GitHub to Local
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Ensure git is installed
+      apt:
+        name: git
+        state: present
+
+    - name: Clone GitHub Repository
+      git:
+        repo: 'https://github.com/Lellasubhasri/html.git'
+        dest: /tmp/my_repo  
+        version: main
